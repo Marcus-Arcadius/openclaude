@@ -284,12 +284,12 @@ describe('OpenCode model catalog', () => {
 
   test('zen model count matches expected', () => {
     const models = getCatalogEntriesForRoute('opencode')
-    expect(models.length).toBe(43)
+    expect(models.length).toBe(48)
   })
 
   test('go model count matches expected', () => {
     const models = getCatalogEntriesForRoute('opencode-go')
-    expect(models.length).toBe(13)
+    expect(models.length).toBe(20)
   })
 
   test('all zen gpt models have modelDescriptorId', () => {
@@ -324,6 +324,8 @@ describe('OpenCode model catalog', () => {
       'opencode-go-minimax-m3',
       'opencode-go-minimax-m2.7',
       'opencode-go-minimax-m2.5',
+      'opencode-go-qwen3.7-max',
+      'opencode-go-qwen3.7-plus',
       'opencode-go-qwen3.6-plus',
       'opencode-go-qwen3.5-plus',
     ]
@@ -464,6 +466,19 @@ describe('OpenCode edge cases', () => {
     for (const model of models) {
       expect(model.defaultModel).toMatch(/^[a-z0-9\-\.]+$/)
     }
+  })
+
+  test('model descriptors preserve OpenCode provider limit metadata', () => {
+    const models = new Map(
+      getAllModels()
+        .filter(m => m.id.startsWith('opencode-'))
+        .map(model => [model.id, model]),
+    )
+
+    expect(models.get('opencode-qwen3.6-plus')?.contextWindow).toBe(262_144)
+    expect(models.get('opencode-deepseek-v4-pro')?.maxOutputTokens).toBe(384_000)
+    expect(models.get('opencode-go-minimax-m2.5')?.maxOutputTokens).toBe(65_536)
+    expect(models.get('opencode-go-hy3-preview')?.contextWindow).toBe(256_000)
   })
 
   test('zen gateway validation message mentions OPENCODE_API_KEY', () => {
