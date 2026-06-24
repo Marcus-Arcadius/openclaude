@@ -2849,7 +2849,7 @@ function runHeadlessStreaming(
             }))
           }
           if (abortController) {
-            abortController.abort()
+            abortController.abort('interrupt')
           }
           suggestionState.abortController?.abort()
           suggestionState.abortController = null
@@ -3946,7 +3946,7 @@ function runHeadlessStreaming(
                     structuredIO.injectControlResponse(response)
                   },
                   onInterrupt() {
-                    abortController?.abort()
+                    abortController?.abort('interrupt')
                   },
                   onSetModel(model) {
                     const resolved =
